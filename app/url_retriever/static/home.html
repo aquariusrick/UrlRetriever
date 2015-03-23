@@ -15,7 +15,7 @@
 <div id="container">
     <div class="url_input">
         <label for="url_input">Url: </label>
-        <input id="url_input" type="url" value="http://www.yahoo.com" />
+        <input id="url_input" type="url" value="http://localhost:8080" />
         <button class="submit" type="button">Go!</button>
     </div>
     <div class="url_results">
@@ -30,10 +30,10 @@
 </div>
 
 <script type="text/template" id="tag_summary_entry">
-    <li><%= tagName %> - <%= usageCount %></li>
+    <li<% if (isSelected) print(' class="selected"'); %>><%= tagName %> - <%= usageCount %></li>
 </script>
-<script type="text/template" id="url_results">
-    <pre><code><%- content %></code></pre>
+<script type="text/template" id="url_detail">
+    <pre><code><%= display_content %></code></pre>
 </script>
 
 </body>

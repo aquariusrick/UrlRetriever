@@ -1,5 +1,14 @@
 body {
-  line-height: 1;
-  color: black;
-  background: white;
+    line-height: 1;
+    color: black;
+    background: white;
+}
+
+li.selected {
+    color: orange;
+    font-weight: bold;
+}
+
+span.found {
+    background: yellow;
 }

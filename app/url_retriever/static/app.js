@@ -11,15 +11,13 @@ jQuery(function($){
         defaults: {
             tagName: "",
             usageCount: "",
+            isSelected: false,
         },
     });
 
     window.TagView = Backbone.View.extend({
-        tagName: "li",
-        className: "url_tag",
-
         events: {
-            "click"                     : "click",
+            click: "click",
         },
 
         template: _.template($("#tag_summary_entry").html()),
@@ -33,7 +31,8 @@ jQuery(function($){
         },
 
         render: function() {
-            this.$el.html(this.template(this.model.attributes));
+            var html = this.template(this.model.attributes);
+            this.setElement($(html));
             return this;
         },
 
@@ -45,7 +44,7 @@ jQuery(function($){
         events: {},
 
         initialize: function() {
-            _.bindAll(this, "render", "tag_click");
+            _.bindAll(this, "render", "tag_click", "add_tag");
             this.list = this.$('ul', this.$el);
             this.render();
         },
@@ -61,12 +60,14 @@ jQuery(function($){
                 resultDict[tagName] = 0;
               resultDict[tagName] += 1;
             }
-            console.log(resultDict);
             return resultDict;
         },
 
         add_tag: function(data) {
             var model = new Tag(data);
+            var selectedTag = this.model.get("selectedTag");
+            if (selectedTag == model.get("tagName"))
+                model.set("isSelected", true);
             var view = new TagView({model: model});
 
             this.listenTo(view, "click", this.tag_click)
@@ -78,8 +79,8 @@ jQuery(function($){
         },
 
         render: function() {
-            var results = this.get_tag_matches(this.model.get('content'));
             this.list.html("");
+            var results = this.get_tag_matches(this.model.get('content'));
 
             var tagNames = _.keys(results).sort();
             for (var i in tagNames) {
@@ -93,40 +94,76 @@ jQuery(function($){
     });
 
     window.UrlResultView = Backbone.View.extend({
-        el: "div.url_results",
+        el: "div.url_detail",
         events: {},
 
-        template: _.template($("#url_results").html()),
+        template: _.template($("#url_detail").html()),
 
         initialize: function() {
             _.bindAll(this, "render");
-            this.code_block = this.$("div.url_detail code");
-            this.render();
         },
 
         render: function() {
-//            this.code_block.text(this.model.get('content'));
+            var selectedTag = this.model.get('selectedTag');
+//            alert("HIGHLIGHT! " + selectedTag);
+
+            var content = _.escape(this.model.get("content"));
+            if (selectedTag)
+                content = this.highlight_tags(content);
+
+            this.model.set("display_content", content);
+
             this.$el.html(this.template(this.model.attributes));
-            return this;
             return this;
         },
 
+        highlight_tags: function(searchString) {
+            var tagName = this.model.get('selectedTag');
+
+            //var pattern = /</\b[^>]*>/gmi
+            var pattern = "&lt;/?" + tagName + "\\b.*?&gt;"
+            var re = new RegExp(pattern,"gmi");
+
+            var matchArray;
+            var resultString = "";
+            var first=0; var last=0;
+
+            // find each match
+            while((matchArray = re.exec(searchString)) != null) {
+                last = matchArray.index;
+                // get all of string up to match, concatenate
+                resultString += searchString.substring(first, last);
+
+                // add matched, with class
+                resultString += "<span class='found'>" + matchArray[0] + "</span>";
+                first = re.lastIndex;
+            }
+
+            // finish off string
+            resultString += searchString.substring(first,searchString.length);
+            return resultString;
+        },
     });
 
     window.AppView = Backbone.View.extend({
         el: "div#container",
+
         events: {
             "click    button.submit"  : "url_submit",
             "keypress #url_input"     : "on_keypress",
         },
 
         initialize: function() {
-            _.bindAll(this, "url_submit", "url_success", "render");
+            _.bindAll(this, "url_submit", "url_success", "render", "on_keypress", "highlight_tag");
+
             this.model = new UrlResult();
             this.input = this.$("#url_input");
             this.button = this.$("button.submit");
-            this.resultView = null;
-            this.summaryView = null;
+
+            this.summaryView = new UrlSummaryView({model: this.model});
+            this.resultView = new UrlResultView({model: this.model});
+
+            this.listenTo(this.summaryView, "tag_click", this.highlight_tag);
         },
 
         on_keypress: function(e) {
@@ -141,19 +178,19 @@ jQuery(function($){
 
         url_success: function(data) {
             this.model.set({content: data.content});
+            this.model.set("selectedTag", null);
             this.render();
         },
 
         highlight_tag: function(e) {
-            alert("HIGHLIGHT! " + e);
             this.model.set({selectedTag: e});
-            this.resultView.render();
+            this.render();
         },
 
         render: function() {
-            this.summaryView = new UrlSummaryView({model: this.model});
-            this.resultView = new UrlResultView({model: this.model});
-            this.listenTo(this.summaryView, "tag_click", this.highlight_tag);
+            this.summaryView.render();
+            this.resultView.render();
+            return this;
         },
     });
 

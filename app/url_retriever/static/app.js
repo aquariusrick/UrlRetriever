@@ -22,14 +22,15 @@ jQuery(function($){
         },
 
         get_tag_matches: function(html_string) {
-            var pattern = /<([A-Z][A-Z0-9]*)\b[^>]*>/g;
+            var pattern = /<([A-Z][A-Z0-9]*)\b[^>]*>/gmi;
             var matchArray;
             var resultDict = {};
 
             while((matchArray = pattern.exec(html_string)) != null) {
-              if (! matchArray[0] in resultDict)
-                resultDict[matchArray[0]] = 0;
-              resultDict[matchArray[0]] += 1;
+              var tagName = matchArray[1].toUpperCase();
+              if (!(tagName in resultDict))
+                resultDict[tagName] = 0;
+              resultDict[tagName] += 1;
             }
             console.log(resultDict);
             return resultDict;
@@ -94,7 +95,7 @@ jQuery(function($){
         },
 
         success: function(data) {
-            console.log(data.content);
+//            console.log(data.content);
             this.model.set({content: data.content});
             this.render();
         },

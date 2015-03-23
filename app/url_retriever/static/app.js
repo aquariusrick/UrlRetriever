@@ -1,10 +1,4 @@
 jQuery(function($){
-    window.UrlResultTag = Backbone.Model.extend({
-        defaults: {
-            tagName: "",
-            usageCount: "",
-        },
-    });
     window.UrlResult = Backbone.Model.extend({
         defaults: {
             url: "",
@@ -13,12 +7,51 @@ jQuery(function($){
 
     });
 
+    window.Tag = Backbone.Model.extend({
+        defaults: {
+            tagName: "",
+            usageCount: "",
+        },
+    });
+
+    window.TagView = Backbone.View.extend({
+        tagName: "li",
+        className: "url_tag",
+
+        template: _.template($("#tag_summary_entry").html()),
+
+        initialize: function() {
+            _.bindAll(this, "render");
+        },
+
+        render: function() {
+            this.$el.html(this.template(this.model.attributes));
+            return this;
+        },
+
+    });
+
     window.UrlSummaryView = Backbone.View.extend({
         el: "div.url_summary",
 
         initialize: function() {
-            this.results = this.get_tag_matches(this.model.get('content'));
-            alert("Summary Loaded!");
+            _.bindAll(this, "render");
+            this.list = this.$('ul', this.$el);
+            this.render();
+        },
+
+        render: function() {
+            var results = this.get_tag_matches(this.model.get('content'));
+            this.list.html("");
+
+            var tagNames = _.keys(results).sort();
+            for (var i in tagNames) {
+                var name = tagNames[i];
+                var count = results[name];
+                this.add_tag({tagName: name, usageCount: count});
+            }
+
+            return this;
         },
 
         get_tag_matches: function(html_string) {
@@ -35,8 +68,13 @@ jQuery(function($){
             console.log(resultDict);
             return resultDict;
         },
-    });
 
+        add_tag: function(data) {
+            var model = new Tag(data);
+            var view = new TagView({model: model});
+            this.list.append(view.render().el)
+        },
+    });
 
     window.UrlResultView = Backbone.View.extend({
         el: "div.url_results",
@@ -46,26 +84,13 @@ jQuery(function($){
 //            alert(this.model.attributes.content);
             this.code_block = this.$("div.url_detail code");
             this.render();
-            this.summaryView = null;
         },
 
         render: function() {
             this.code_block.text(this.model.get('content'));
-            this.summaryView = new UrlSummaryView({model: this.model})
         },
 
     });
-
-//    window.UrlInputView = Backbone.View.extend({
-//
-//        initialize: function() {
-//            _.bindAll(this, "submit");
-//        },
-//
-//        submit: function() {
-//            this.trigger("submit", {url: this.input.val()});
-//        }
-//    });
 
     window.AppView = Backbone.View.extend({
         el: "div#container",
@@ -101,6 +126,7 @@ jQuery(function($){
         },
 
         render: function() {
+            this.summaryView = new UrlSummaryView({model: this.model});
             this.resultView = new UrlResultView({model: this.model});
         }
     });

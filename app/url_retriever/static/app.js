@@ -50,7 +50,6 @@ jQuery(function($){
         initialize: function() {
             _.bindAll(this, "render", "tag_click", "add_tag");
             this.list = this.$('ul', this.$el);
-            this.render();
         },
 
         get_tag_matches: function(html_string) {
@@ -151,7 +150,7 @@ jQuery(function($){
 
     // Main application
     window.AppView = Backbone.View.extend({
-        // There are basically 2 actions the user can take: 1. enter a new URL; 2. Click on a tag for highlighting.
+        // There are 2 actions the user can take: 1. submit a new URL; 2. Click on a tag for highlighting.
         // The application listens for these events to occur and handles them by updating the shared model data,
         // and then calling render on the views.
 

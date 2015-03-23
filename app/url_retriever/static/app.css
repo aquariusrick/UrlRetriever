@@ -4,11 +4,61 @@ body {
     background: white;
 }
 
-li.selected {
+div.url_input {
+	border-bottom: 1px solid;
+}
+
+div.url_results {
+	padding: 1px;
+	white-space: nowrap;
+	overflow-x: scroll;
+}
+div.url_summary {
+	float:left;
+}
+
+div.url_summary ul {
+	padding: 0;
+	border-right: 1px solid;
+	margin: 0;
+}
+
+div.url_summary li {
+	list-style: none;
+	padding: .15em;
+	border-bottom: 1px solid;
+}
+
+div.url_summary li.selected {
     color: orange;
     font-weight: bold;
 }
 
-span.found {
+
+div.url_detail {
+    display: inline-block;
+}
+div.url_detail pre {
+	margin:.1em;
+	border: solid;
+	background:#F8F8FF; border:black dashed 1px; padding:6px;
+}
+
+div.url_detail span.found {
     background: yellow;
+}
+
+#container {
+	border-size: 2px;
+	border-style: solid;
+	border-color: black;
+	margin: 0 auto;
+}
+
+.clearfix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
 }

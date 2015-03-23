@@ -1,4 +1,4 @@
-application: rick-garlick-slack-interview
+application: rick-garlick
 version: 1
 runtime: python27
 api_version: 1
@@ -6,8 +6,6 @@ threadsafe: true
 
 
 handlers:
-
-
 - url: /$
   static_files: app/url_retriever/static/home.html
   upload: app/url_retriever/static/.*
@@ -24,11 +22,6 @@ handlers:
   upload: app/url_retriever/static/.*
 
 
-
 libraries:
 - name: webapp2
   version: latest
-
-- name: jinja2
-  version: latest
-

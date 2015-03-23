@@ -105,7 +105,6 @@ jQuery(function($){
 
         render: function() {
             var selectedTag = this.model.get('selectedTag');
-//            alert("HIGHLIGHT! " + selectedTag);
 
             var content = _.escape(this.model.get("content"));
             if (selectedTag)
@@ -164,6 +163,7 @@ jQuery(function($){
             this.resultView = new UrlResultView({model: this.model});
 
             this.listenTo(this.summaryView, "tag_click", this.highlight_tag);
+            this.input.val(window.location);
         },
 
         on_keypress: function(e) {

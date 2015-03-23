@@ -1,4 +1,5 @@
 jQuery(function($){
+    // The data model shared by the application and the result views.
     window.UrlResult = Backbone.Model.extend({
         defaults: {
             url: "",
@@ -7,6 +8,7 @@ jQuery(function($){
         },
     });
 
+    // Model for each tag in the summary view.
     window.Tag = Backbone.Model.extend({
         defaults: {
             tagName: "",
@@ -15,6 +17,7 @@ jQuery(function($){
         },
     });
 
+    // View for each tag in the summary view.
     window.TagView = Backbone.View.extend({
         events: {
             click: "click",
@@ -38,6 +41,7 @@ jQuery(function($){
 
     });
 
+    // Summary view
     window.UrlSummaryView = Backbone.View.extend({
         el: "div.url_summary",
 
@@ -93,6 +97,7 @@ jQuery(function($){
         },
     });
 
+    // Code View
     window.UrlResultView = Backbone.View.extend({
         el: "div.url_detail",
         events: {},
@@ -144,7 +149,12 @@ jQuery(function($){
         },
     });
 
+    // Main application
     window.AppView = Backbone.View.extend({
+        // There are basically 2 actions the user can take: 1. enter a new URL; 2. Click on a tag for highlighting.
+        // The application listens for these events to occur and handles them by updating the shared model data,
+        // and then calling render on the views.
+
         el: "div#container",
 
         events: {
@@ -166,6 +176,7 @@ jQuery(function($){
             this.input.val(window.location);
         },
 
+        // For pressing enter in the url box
         on_keypress: function(e) {
           if (e.keyCode == 13) this.url_submit();
         },

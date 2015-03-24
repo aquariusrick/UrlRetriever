@@ -1,20 +1,63 @@
+html, body {
+	height: 100%;
+	border:0;
+	margin:0;
+	padding:0;
+}
+
 body {
     line-height: 1;
     color: black;
     background: white;
+
 }
 
-div.url_input {
+#container {
+	paddng: 3px;
+
+	border-size: 2px;
+	border-style: solid;
+	border-color: black;
+ 	box-sizing: border-box;
+}
+
+#container.intro div.url_input {
+	border: none;
+	margin: 10em;
+	padding: 4em auto;
+	text-align: center;
+	font-size: 1.3em;
+}
+#container.intro div.url_input input {
+	height: 2em;
+}
+
+#container.intro div.url_input button {
+	height: 2.4em;
+}
+
+#container.normal div.url_input {
+	padding: .2em;
 	border-bottom: 1px solid;
+}
+
+
+div.url_input {
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+div.url_input input {
+	width: 25em;	
 }
 
 div.url_results {
 	padding: 1px;
 	white-space: nowrap;
-	overflow-x: scroll;
+	height: 100%;
 }
 div.url_summary {
-	float:left;
+	float: left;
 }
 
 div.url_summary ul {
@@ -36,23 +79,20 @@ div.url_summary li.selected {
 
 
 div.url_detail {
-    display: inline-block;
+	background: #F8F8FF; 
+	border: black dashed 1px; 
+	margin: auto;
+	overflow: auto;
+	height:100%;
 }
+
 div.url_detail pre {
-	margin:.1em;
-	border: solid;
-	background:#F8F8FF; border:black dashed 1px; padding:6px;
+	margin: .1em;
+	padding: .3em;
 }
 
 div.url_detail span.found {
     background: yellow;
-}
-
-#container {
-	border-size: 2px;
-	border-style: solid;
-	border-color: black;
-	margin: 0 auto;
 }
 
 .clearfix:after {

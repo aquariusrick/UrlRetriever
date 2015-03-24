@@ -173,7 +173,10 @@ jQuery(function($){
             this.resultView = new UrlResultView({model: this.model});
 
             this.listenTo(this.model, "change:url", this.fetch_url_content);
+            this.listenTo(this.model, "change:content", function() {this.$el.removeClass("intro").addClass("normal")});
             this.$input.val(window.location);
+
+            this.$el.addClass("intro");
         },
 
         // For pressing enter in the url box

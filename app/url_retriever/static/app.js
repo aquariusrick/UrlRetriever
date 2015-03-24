@@ -113,10 +113,11 @@ jQuery(function($){
 
         render: function() {
             var selectedTag = this.model.get('selectedTag');
-
-            var content = this.model.escape("content");
+            var content;
             if (selectedTag)
-                content = this.highlight_tags(content);
+                content = this.highlight_tags(this.model.get("content"));
+            else
+                content = this.model.escape("content");
 
             this.model.set("display_content", content);
 
@@ -127,8 +128,7 @@ jQuery(function($){
         highlight_tags: function(searchString) {
             var tagName = this.model.get('selectedTag');
 
-            //var pattern = /</\b[^>]*>/gmi
-            var pattern = "&lt;/?" + tagName + "\\b.*?&gt;"
+            var pattern = "</?" + tagName + "\\b[^>]*>"
             var re = new RegExp(pattern,"gmi");
 
             var matchArray;
@@ -139,15 +139,15 @@ jQuery(function($){
             while((matchArray = re.exec(searchString)) != null) {
                 last = matchArray.index;
                 // get all of string up to match, concatenate
-                resultString += searchString.substring(first, last);
+                resultString += _.escape(searchString.substring(first, last));
 
                 // add matched, with class
-                resultString += "<span class='found'>" + matchArray[0] + "</span>";
+                resultString += "<span class='found'>" + _.escape(matchArray[0]) + "</span>";
                 first = re.lastIndex;
             }
 
             // finish off string
-            resultString += searchString.substring(first,searchString.length);
+            resultString += _.escape(searchString.substring(first,searchString.length));
             return resultString;
         },
     });

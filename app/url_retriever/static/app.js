@@ -34,7 +34,7 @@ jQuery(function($){
         },
 
         render: function() {
-            var html = this.template(this.model.attributes);
+            var html = this.template(this.model.toJSON());
             this.setElement($(html));
             return this;
         },
@@ -50,6 +50,8 @@ jQuery(function($){
         initialize: function() {
             _.bindAll(this, "render", "tag_click", "add_tag");
             this.list = this.$('ul', this.$el);
+
+            this.listenTo(this.model, "change:selectedTag change:content", this.render);
         },
 
         get_tag_matches: function(html_string) {
@@ -73,12 +75,12 @@ jQuery(function($){
                 model.set("isSelected", true);
             var view = new TagView({model: model});
 
-            this.listenTo(view, "click", this.tag_click)
-            this.list.append(view.render().el)
+            this.listenTo(view, "click", this.tag_click);
+            this.list.append(view.render().el);
         },
 
         tag_click: function(e) {
-            this.trigger("tag_click", e);
+            this.model.set("selectedTag", e);
         },
 
         render: function() {
@@ -105,18 +107,20 @@ jQuery(function($){
 
         initialize: function() {
             _.bindAll(this, "render");
+
+            this.listenTo(this.model, "change:selectedTag change:content", this.render);
         },
 
         render: function() {
             var selectedTag = this.model.get('selectedTag');
 
-            var content = _.escape(this.model.get("content"));
+            var content = this.model.escape("content");
             if (selectedTag)
                 content = this.highlight_tags(content);
 
             this.model.set("display_content", content);
 
-            this.$el.html(this.template(this.model.attributes));
+            this.$el.html(this.template(this.model.toJSON()));
             return this;
         },
 
@@ -151,57 +155,48 @@ jQuery(function($){
     // Main application
     window.AppView = Backbone.View.extend({
         // There are 2 actions the user can take: 1. submit a new URL; 2. Click on a tag for highlighting.
-        // The application listens for these events to occur and handles them by updating the shared model data,
-        // and then calling render on the views.
 
         el: "div#container",
 
         events: {
-            "click    button.submit"  : "url_submit",
+            "click    button.submit"  : "set_url",
             "keypress #url_input"     : "on_keypress",
         },
 
         initialize: function() {
-            _.bindAll(this, "url_submit", "url_success", "render", "on_keypress", "highlight_tag");
+            _.bindAll(this, "url_success", "render", "on_keypress");
+            this.$input = this.$("#url_input");
 
             this.model = new UrlResult();
-            this.input = this.$("#url_input");
-            this.button = this.$("button.submit");
 
             this.summaryView = new UrlSummaryView({model: this.model});
             this.resultView = new UrlResultView({model: this.model});
 
-            this.listenTo(this.summaryView, "tag_click", this.highlight_tag);
-            this.input.val(window.location);
+            this.listenTo(this.model, "change:url", this.fetch_url_content);
+            this.$input.val(window.location);
         },
 
         // For pressing enter in the url box
         on_keypress: function(e) {
-          if (e.keyCode == 13) this.url_submit();
+          if (e.keyCode == 13) this.set_url();
         },
 
-        url_submit: function() {
-            var url = this.input.val();
-            this.model.set({url: url});
+        set_url: function() {
+            this.model.set("url", this.$input.val());
+        },
+
+        fetch_url_content: function() {
+            var url = this.model.get("url");
             $.get("api/retrieve_url?url=" + encodeURIComponent(url), this.url_success);
         },
 
         url_success: function(data) {
-            this.model.set({content: data.content});
-            this.model.set("selectedTag", null);
-            this.render();
+            this.model.set({
+                content: data.content,
+                selectedTag: null,
+            });
         },
 
-        highlight_tag: function(e) {
-            this.model.set({selectedTag: e});
-            this.render();
-        },
-
-        render: function() {
-            this.summaryView.render();
-            this.resultView.render();
-            return this;
-        },
     });
 
     window.App = new AppView();

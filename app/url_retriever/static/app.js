@@ -183,7 +183,7 @@ jQuery(function($){
         url_submit: function() {
             var url = this.input.val();
             this.model.set({url: url});
-            $.get("/api/retrieve_url?url=" + encodeURIComponent(url), this.url_success);
+            $.get("api/retrieve_url?url=" + encodeURIComponent(url), this.url_success);
         },
 
         url_success: function(data) {

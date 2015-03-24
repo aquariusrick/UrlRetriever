@@ -1,6 +1,6 @@
 # UrlRetriever
 
-http://rick-garlick.appspot.com/
+http://rick-garlick.appspot.com/url_retriever/
 
 0. Users can enter a URL of a page to fetch
 0. The web app fetches the HTML of the page and displays the source to the user

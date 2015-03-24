@@ -6,21 +6,20 @@ threadsafe: true
 
 
 handlers:
-- url: /$
+- url: /url_retriever/$
   static_files: app/url_retriever/static/home.html
+  upload: app/url_retriever/static/.*
+
+- url: /url_retriever/api/.*
+  script: app.url_retriever.api.application
+
+- url: /url_retriever/(.*)
+  static_files: app/url_retriever/static/\1
   upload: app/url_retriever/static/.*
 
 - url: /lib/(.*)
   static_files: app/lib/\1
   upload: app/lib/.*
-
-- url: /api/.*
-  script: app.url_retriever.api.application
-
-- url: /(.*)
-  static_files: app/url_retriever/static/\1
-  upload: app/url_retriever/static/.*
-
 
 libraries:
 - name: webapp2

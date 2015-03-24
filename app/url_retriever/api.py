@@ -23,7 +23,7 @@ class UrlRetriever(webapp2.RequestHandler):
             log.error(e.message)
 
 application = webapp2.WSGIApplication([
-    ('/api/retrieve_url/?$', UrlRetriever),
+    ('/url_retriever/api/retrieve_url/?$', UrlRetriever),
     ], debug=True)
 
 

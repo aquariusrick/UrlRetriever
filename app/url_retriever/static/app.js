@@ -1,4 +1,5 @@
-jQuery(function($){
+"use strict";
+(jQuery(function($) {
     // The data model shared by the application and the result views.
     window.UrlResult = Backbone.Model.extend({
         defaults: {
@@ -201,6 +202,4 @@ jQuery(function($){
         },
 
     });
-
-    window.App = new AppView();
-});
+}));

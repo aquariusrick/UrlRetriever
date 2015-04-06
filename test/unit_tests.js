@@ -12,7 +12,6 @@ QUnit.test("Submitting new URL shows summary and detail", function testSubmitUrl
     assert.equal(this.App.model.get("url"), "http://yahoo.com", "Url was updated on model");
 
     var testHtml = '<html><div class="none"></div><div><div></div></div><footer></footer></html>';
-//    this.App.model.set("url", "http://localhost", {silent: true});
     assert.notEqual(this.App.model.get("content"), testHtml, "Content is not yet on the model");
     this.App.url_success({content: testHtml});
     assert.equal(this.App.model.get("content"), testHtml, "Content was updated on model");
@@ -27,7 +26,6 @@ QUnit.test("Submitting new URL shows summary and detail", function testSubmitUrl
     assert.ok(this.App.resultView, "URL Detail is Accessible");
     var code = this.App.model.get('display_content')
     var expected = this.App.resultView.highlight_tags(this.App.model.get("content"), this.App.model.get('selectedTag'));
-//    expected = $('<code></code>').html(expected).html();
     assert.equal(expected, code, "Code in the result code box matched as expected");
 
     results = [
@@ -45,7 +43,6 @@ QUnit.test("Submitting new URL shows summary and detail", function testSubmitUrl
         tag.click();
         setTimeout(function clickTestTimeout() {
             tag = $(this.App.summaryView.list.children()[i]);
-            console.log(this.App.model.get('display_content'));
             assert.ok(tag.hasClass("selected"), "Tag " + (i + 1) + " is selected");
             assert.equal(this.App.model.get('display_content'), results[i], "Tag " + (i + 1) + " Url Detail Highlighting is correct!");
             done();

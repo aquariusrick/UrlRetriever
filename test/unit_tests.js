@@ -1,10 +1,52 @@
-QUnit.module("Functional Test", {
+QUnit.module("Unit Test", {
     setup: function(){
-        this.App = new window.AppView();
+        this.App = window.App;
+        this.App.reset();
     }
 });
+QUnit.test("Blank or invalid Url show error message", function testInvalidUrl(assert){
+    var urlBlankError = "Url cannot be blank!",
+        urlInvalidError = "Url is invalid!";
 
-QUnit.test("Submitting new URL shows summary and detail", function testSubmitUrl(assert) {
+    assert.ok(this.App.model, "App model is accessible");
+    this.App.$input.val("");
+    var button = jQuery('.url_input button');
+    button.click();
+    assert.equal(this.App.model.get("errorMessage"), urlBlankError, "Url Blank Message set on Model.");
+    assert.notOk(this.App.model.get('url'), "Url is not set.");
+
+    // Clear error message
+    this.App.model.set('errorMessage', null, {silent: true});
+
+    this.App.$input.val("www");
+    button.click();
+    assert.equal(this.App.model.get('url'), 'www', 'Url is set.');
+    setTimeout(function errorMessageCheck(done){
+        var $errorMessage = $('.message', this.App.errorMessageView.el);
+        assert.equal(this.App.model.get("errorMessage"), urlInvalidError, "Invalid Url Message set on Model.");
+        assert.equal($errorMessage.text(), urlInvalidError, "Error message shows Invalid Url Message.");
+        done();
+    }.bind(this, assert.async()), 500);
+});
+
+QUnit.test("Error Message goes away after successful Url request.", function testErrorRemovesAfterSuccessfulUrl(assert) {
+    this.App.$input.val("");
+    var button = jQuery('.url_input button');
+    button.click();
+    assert.ok(this.App.model.get('errorMessage'), 'An error message is set.')
+    var testHtml = '<html><div class="none"></div><div><div></div></div><footer></footer></html>';
+    this.App.url_success({content: testHtml});
+    assert.equal(this.App.model.get('content'), testHtml, "Content was updated on model");
+    assert.notOk(this.App.model.get('errorMessage'), 'No error message is set.')
+});
+
+QUnit.module("Functional Test", {
+    setup: function(){
+        this.App = window.App;
+        this.App.reset();
+    }
+});
+QUnit.test("Submitting new URL shows summary and detail; clicking tag highlights tag and source text.", function testSubmitUrl(assert) {
     assert.ok(this.App.model, "App model is accessible");
 
     jQuery('input#url_input').val("http://yahoo.com");

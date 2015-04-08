@@ -12,6 +12,7 @@
 </head>
 <body>
 <div id="container" class="clearfix">
+    <div id="error_message"></div>
     <div class="url_input">
         <label for="url_input">Url: </label>
         <input id="url_input" type="url" value="" />
@@ -33,6 +34,9 @@
 </script>
 <script type="text/template" id="url_detail">
     <pre><code><%= display_content %></code></pre>
+</script>
+<script type="text/template" id="template_error_message">
+    <strong class="message"><%= errorMessage %></strong>
 </script>
 
 </body>

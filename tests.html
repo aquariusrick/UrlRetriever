@@ -3,12 +3,13 @@
 <head>
     <meta charset="utf-8">
     <title>Url Retriever Tests</title>
-    <link rel="stylesheet" href="qunitsrc/qunit-1.17.1.css">
+    <link rel="stylesheet" href="qunitsrc/qunit-1.18.0.css">
 </head>
 <body>
     <div id="qunit"></div>
     <div id="qunit-fixture">
         <div id="container" class="clearfix">
+            <div id="error_message"></div>
             <div class="url_input">
                 <label for="url_input">Url: </label>
                 <input id="url_input" type="url" value="" />
@@ -31,12 +32,15 @@
         <script type="text/template" id="url_detail">
             <pre><code><%= display_content %></code></pre>
         </script>
+        <script type="text/template" id="template_error_message">
+            <strong class="message"><%= errorMessage %></strong>
+        </script>
     </div>
     <script src="http://underscorejs.org/underscore-min.js"></script>
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
     <script src="//raw.githubusercontent.com/douglascrockford/JSON-js/master/json2.js"></script>
     <script src="http://backbonejs.org/backbone-min.js"></script>
-    <script src="qunitsrc/qunit-1.17.1.js"></script>
+    <script src="qunitsrc/qunit-1.18.0.js"></script>
     <script src="test/unit_tests.js"></script>
     <script src="app/url_retriever/static/app.js"></script>
 </body>

@@ -1,9 +1,41 @@
 jQuery ($) ->
     class UrlResult extends Backbone.Model
         defaults:
-            url: ""
-            content: ""
+            url: null
+            content: null
             selectedTag: null
+            errorMessage: null
+
+        setUrl: (url) ->
+            @set 'url', url, {validate: true}
+
+        setContent: (content) ->
+            @set
+                content: content
+                errorMessage: null
+                selectedTag: null
+
+        validate: (attributes, options) ->
+            errorMessage = 'Url cannot be blank!'
+            if 'url' of attributes and attributes['url'] == ''
+                @.set 'errorMessage', errorMessage
+                return errorMessage
+
+
+
+    class ErrorMessageView extends Backbone.View
+        el: '#error_message'
+
+        template: _.template $('#template_error_message').html()
+
+        initialize: ->
+            _.bindAll @, 'render'
+            @listenTo @model, 'change:errorMessage change:url change:content', @render
+
+        render: ->
+            @$el.empty()
+            @$el.html @template(@model.toJSON())
+            return @
 
     # Model for each tag in the summary view.
     class Tag extends Backbone.Model
@@ -77,7 +109,6 @@ jQuery ($) ->
                 .sort()
             for name in tagNames
                 count = results[name]
-                console.log "#{name} - #{count}"
                 @add_tag
                     tagName: name
                     usageCount: count
@@ -140,14 +171,16 @@ jQuery ($) ->
             "keypress #url_input"     : "on_keypress"
 
 
-        initialize: ->
-            _.bindAll @, "url_success", "render", "on_keypress"
+        initialize: -> @reset()
+        reset: ->
+            _.bindAll @, "url_success", "url_error", "render", "on_keypress"
             @$input = @$ "#url_input"
 
             @model = new UrlResult()
 
             @summaryView = new UrlSummaryView model: @model
             @resultView = new UrlResultView model: @model
+            @errorMessageView = new ErrorMessageView model: @model
 
             @listenTo @model, "change:url", @fetch_url_content
             @listenTo @model, "change:content", -> @$el.removeClass("intro").addClass("normal")
@@ -160,16 +193,18 @@ jQuery ($) ->
             @set_url() if e.keyCode == 13
 
         set_url: ->
-            @model.set "url", @$input.val()
+            @model.setUrl @$input.val()
 
         fetch_url_content: ->
             url = @model.get "url"
-            $.get "api/retrieve_url?url=" + encodeURIComponent(url), @url_success
+            $.get("api/retrieve_url?url=" + encodeURIComponent(url), @url_success)
+                .fail(@url_error)
 
         url_success: (data) ->
-            @model.set
-                content: data.content
-                selectedTag: null
+            @model.setContent data.content
+
+        url_error: ->
+            @model.set "errorMessage", "Url is invalid!"
 
     window.AppView = AppView;
     window.App = new AppView();

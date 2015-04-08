@@ -40,22 +40,22 @@ jQuery ($) ->
     # Model for each tag in the summary view.
     class Tag extends Backbone.Model
         defaults:
-            tagName: ""
-            usageCount: ""
+            tagName: ''
+            usageCount: ''
             isSelected: false
 
     # View for each tag in the summary view.
     class TagView extends Backbone.View
         events:
-            click: "click"
+            click: 'click'
 
-        template: _.template $("#tag_summary_entry").html()
+        template: _.template $('#tag_summary_entry').html()
 
         initialize: ->
-            _.bindAll @, "render", "click"
+            _.bindAll @, 'render', 'click'
 
         click: ->
-            @trigger "click", @model.get('tagName')
+            @trigger 'click', @model.get('tagName')
 
         render: ->
             html = @template @model.toJSON()
@@ -64,15 +64,15 @@ jQuery ($) ->
 
     # Summary view
     class UrlSummaryView extends Backbone.View
-        el: "div.url_summary"
+        el: 'div.url_summary'
 
         events: {}
 
         initialize: ->
-            _.bindAll @, "render", "tag_click", "add_tag"
+            _.bindAll @, 'render', 'tag_click', 'add_tag'
             @list = @$ 'ul', @$el
 
-            @listenTo @model, "change:selectedTag change:content", @render
+            @listenTo @model, 'change:selectedTag change:content', @render
 
         get_tag_matches: (html_string) ->
             pattern = /<([A-Z][A-Z0-9]*)\b[^>]*>/gmi
@@ -89,17 +89,17 @@ jQuery ($) ->
         add_tag: (data) ->
             console.log data
             model = new Tag(data)
-            selectedTag = @model.get "selectedTag"
-            if selectedTag == model.get "tagName"
-                model.set "isSelected", true
+            selectedTag = @model.get 'selectedTag'
+            if selectedTag == model.get 'tagName'
+                model.set 'isSelected', true
             view = new TagView
                 model: model
 
-            @listenTo(view, "click", @tag_click);
+            @listenTo(view, 'click', @tag_click);
             @list.append(view.render().el);
 
         tag_click: (e) ->
-            @model.set "selectedTag", e
+            @model.set 'selectedTag', e
 
         render: ->
             @list.empty()
@@ -117,14 +117,14 @@ jQuery ($) ->
 
     # Code View
     class UrlResultView extends Backbone.View
-        el: "div.url_detail"
+        el: 'div.url_detail'
         events: {}
 
-        template: _.template $("#url_detail").html()
+        template: _.template $('#url_detail').html()
 
         initialize: ->
-            _.bindAll @, "render"
-            @listenTo @model, "change:selectedTag change:content", @render
+            _.bindAll @, 'render'
+            @listenTo @model, 'change:selectedTag change:content', @render
 
         render: ->
 
@@ -138,10 +138,10 @@ jQuery ($) ->
             if not tagName
                 return _.escape searchString
 
-            pattern = "</?" + tagName + "\\b[^>]*>"
-            re = new RegExp pattern, "gmi"
+            pattern = '</?' + tagName + '\\b[^>]*>'
+            re = new RegExp pattern, 'gmi'
 
-            resultString = ""
+            resultString = ''
             first = 0
             last = 0
 
@@ -152,7 +152,7 @@ jQuery ($) ->
                 resultString += _.escape searchString.substring(first, last)
 
                 # add matched, with class
-                resultString += "<span class='found'>#{_.escape matchArray[0]}</span>"
+                resultString += '<span class="found">#{_.escape matchArray[0]}</span>'
                 first = re.lastIndex
 
 

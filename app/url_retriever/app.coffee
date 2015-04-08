@@ -70,7 +70,7 @@ jQuery ($) ->
             @model.set "selectedTag", e
 
         render: ->
-            @list.html ""
+            @list.empty()
             results = @get_tag_matches @model.get('content')
 
             tagNames = _.keys results
@@ -96,8 +96,9 @@ jQuery ($) ->
             @listenTo @model, "change:selectedTag change:content", @render
 
         render: ->
-            content = @highlight_tags @model.get('content'), @model.get('selectedTag')
-            @model.set "display_content", content
+
+            display = @highlight_tags @model.get('content'), @model.get('selectedTag')
+            @model.set "display_content", display
             @$el.html @template(@model.toJSON())
 
             return @

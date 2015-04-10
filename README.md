@@ -9,7 +9,7 @@ http://rick-garlick.appspot.com/url_retriever/
 
 # Google App Engine
 Use the following command to deploy:
-
+appcfg.py update ./
 
 # Added Coffee Script!
 Use the following command to compile (and watch for changes):

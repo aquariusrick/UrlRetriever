@@ -152,7 +152,7 @@ jQuery ($) ->
                 resultString += _.escape searchString.substring(first, last)
 
                 # add matched, with class
-                resultString += '<span class="found">#{_.escape matchArray[0]}</span>'
+                resultString += "<span class=\"found\">#{_.escape matchArray[0]}</span>"
                 first = re.lastIndex
 
 
